@@ -34,7 +34,7 @@ IGNORE_HOSTS[1]="default-ssl"
 #==================================================================#
 # Internal variables, please don't change them.
 #==================================================================#
-VERSION="3.0"
+VERSION="3.1"
 
 DEFAULT_COLOR="\033[0m"
 RED="\033[0;31m"
@@ -218,7 +218,6 @@ requireEnvironmentVarValue()
 #==================================================================#
 appendEnvironmentVars()
 {
-
     requireEnvironmentVarName
     requireEnvironmentVarValue
 
@@ -645,7 +644,6 @@ menuRemoveHost()
     echo -e " $RED✖$DEFAULT_COLOR Hosts desabilitados. $GREEN✔$DEFAULT_COLOR Hosts habilitados."
     echo ""
 
-
     if [ ! -z $SITES_DIRECTLY ]; then
         hostsAvailable=''
         hostsAvailableId=0
@@ -745,9 +743,6 @@ removeHostApache()
         local serverName=$(grep ServerName $SITES_AVAILABLE/${hostsAvailable[$id]} | awk '{print $2}')
     fi
 
-    # local serverPort=$(grep Listen $SITES_AVAILABLE/${hostsAvailable[$id]} | awk '{print $2}')
-    # local documentRoot=$(grep DocumentRoot $SITES_AVAILABLE/${hostsAvailable[$id]} | awk '{print $2}')
-
     confirmationRemove "$id" "$serverName"
 }
 
@@ -760,9 +755,6 @@ removeHostNginx()
     else
         local serverName=$(grep server_name $SITES_AVAILABLE/${hostsAvailable[$id]} | awk '{print $2}')
     fi
-
-    # local serverPort=$(grep Listen $SITES_AVAILABLE/${hostsAvailable[$id]} | awk '{print $2}')
-    # local documentRoot=$(grep DocumentRoot $SITES_AVAILABLE/${hostsAvailable[$id]} | awk '{print $2}')
 
     confirmationRemove "$id" "$serverName"
 }
@@ -797,10 +789,7 @@ removeHost()
     local id=$1
     local serverName=$2
 
-
     if [ "$serverName" != "" ]; then
-        serverName=$(sanitizeServerName $serverName)
-
         # If there is a server name we need to remove it from hosts file.
         messageBlue " Removendo entrada do arquivo /etc/hosts"
         sed  "s/$IP_ADDRESS $serverName//" /etc/hosts > /etc/hosts2
