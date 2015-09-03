@@ -34,7 +34,7 @@ IGNORE_HOSTS[1]="default-ssl"
 #==================================================================#
 # Internal variables, please don't change them.
 #==================================================================#
-VERSION="3.0"
+VERSION="3.1"
 
 DEFAULT_COLOR="\033[0m"
 RED="\033[0;31m"
@@ -218,7 +218,6 @@ requireEnvironmentVarValue()
 #==================================================================#
 appendEnvironmentVars()
 {
-
     requireEnvironmentVarName
     requireEnvironmentVarValue
 
@@ -645,7 +644,6 @@ menuRemoveHost()
     echo -e " $RED✖$DEFAULT_COLOR Hosts desabilitados. $GREEN✔$DEFAULT_COLOR Hosts habilitados."
     echo ""
 
-
     if [ ! -z $SITES_DIRECTLY ]; then
         hostsAvailable=''
         hostsAvailableId=0
@@ -797,9 +795,8 @@ removeHost()
     local id=$1
     local serverName=$2
 
-
     if [ "$serverName" != "" ]; then
-        serverName=$(sanitizeServerName $serverName)
+        # serverName=$(sanitizeServerName $serverName)
 
         # If there is a server name we need to remove it from hosts file.
         messageBlue " Removendo entrada do arquivo /etc/hosts"
