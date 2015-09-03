@@ -248,6 +248,12 @@ requireFileName()
             messageRed "\n [$SITES_AVAILABLE/$vhFileName] Arquivo já existe.\n"
             requireFileName
         fi
+
+        $(fileNameEndUpWithConf "$vhFileName")
+        if [ $? -eq 0 ]; then
+            vhFileName=${vhFileName}.conf
+        fi
+
     else
         requireFileName
     fi
@@ -768,6 +774,19 @@ sanitizeServerName()
     case $SERVER_ID in
         1) echo ${serverName::-1} ;;
     esac
+}
+
+
+fileNameEndUpWithConf()
+{
+    local fileName=$1
+    local content=$(echo "$fileName" | grep ".conf$")
+
+    if [ "$content" = "" ]; then
+        return 0
+    fi
+
+    return 1
 }
 
 removeHost()
