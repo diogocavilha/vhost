@@ -6,26 +6,12 @@ This script has been created to manage the virtual host files from Apache server
 
 # Installation
 
-* Download the script.
-* Create a Symlink by using the command `sudo ln -s /path/script /usr/bin/vhost`
-* That's it!
-
-## Usage
-
-`$ vhost [options]`
-
-## Options
-#### Add/Create a host configuration.
-`vhost -a` or `vhost --add`
-
-#### Delete a host configuration.
-`vhost -d <filename>` or `vhost -r <filename>` or `vhost --delete <filename>` or `vhost --remove <filename>`
-
-#### Show created hosts.
-`vhost -l` or `vhost --list`
-
-#### Show the script help.
-`vhost -h` or `vhost --help`
+```sh
+git clone git@github.com:diogocavilha/vhost.git
+cd vhost/
+chmod +x vhost.sh
+sudo ./vhost.sh
+```
 
 ---
 
