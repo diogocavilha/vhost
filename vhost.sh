@@ -241,18 +241,16 @@ requireFileName()
     read vhFileName
 
     if [ ! -z $vhFileName ]; then
-        $(fileExists "$SITES_AVAILABLE/$vhFileName")
-
-        if [ $? -eq 1 ]; then
-            messageRed "\n [$SITES_AVAILABLE/$vhFileName] Arquivo já existe.\n"
-            requireFileName
-        fi
-
         $(fileNameEndUpWithConf "$vhFileName")
         if [ $? -eq 0 ]; then
             vhFileName=${vhFileName}.conf
         fi
 
+        $(fileExists "$SITES_AVAILABLE/$vhFileName")
+        if [ $? -eq 1 ]; then
+            messageRed "\n [$SITES_AVAILABLE/$vhFileName] Arquivo já existe.\n"
+            requireFileName
+        fi
     else
         requireFileName
     fi
