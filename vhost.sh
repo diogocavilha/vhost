@@ -341,35 +341,40 @@ writeConfigurationApache()
         hostPath=$SITES_AVAILABLE
     fi
 
+    local tmpFile=$HOME/$vhFileName
+    local finalFile=$hostPath/$vhFileName
+
     if [ -z $vhPort ]; then
-        `echo "<VirtualHost *:80>"                           >> $hostPath/$vhFileName`
+        echo "<VirtualHost *:80>" >> $tmpFile
     else
-        `echo "Listen $vhPort"                               >> $hostPath/$vhFileName`
-        `echo "<VirtualHost *:$vhPort>"                      >> $hostPath/$vhFileName`
+        echo "Listen $vhPort" >> $tmpFile
+        echo "<VirtualHost *:$vhPort>" >> $tmpFile
     fi
 
-    `echo -e "\tDocumentRoot $vhPath"                        >> $hostPath/$vhFileName`
+    echo -e "\tDocumentRoot $vhPath" >> $tmpFile
 
     if [ ! -z $vhServerName ]; then
-        `echo -e "\tServerName $vhServerName"                >> $hostPath/$vhFileName`
-        `echo "" >> $hostPath/$vhFileName`
+        echo -e "\tServerName $vhServerName" >> $tmpFile
+        echo "" >> $tmpFile
     else
-        `echo -e "\t#ServerName $vhFileName.local"           >> $hostPath/$vhFileName`
+        echo -e "\t#ServerName $vhFileName.local" >> $tmpFile
     fi
 
     if [ ${#environmentVars} -gt 0 ]; then
-        `echo -e $environmentVars >> $hostPath/$vhFileName`
+        echo -e $environmentVars >> $tmpFile
     else
-        `echo -e "\t#SetEnv VAR_NAME\t\"value\""             >> $hostPath/$vhFileName`
+        echo -e "\t#SetEnv VAR_NAME\t\"value\"" >> $tmpFile
     fi
 
-    `echo -e "\t<Directory $vhPath/>"                        >> $hostPath/$vhFileName`
-    `echo -e "\t\tOptions Indexes FollowSymLinks MultiViews" >> $hostPath/$vhFileName`
-    `echo -e "\t\tAllowOverride All"                         >> $hostPath/$vhFileName`
-    `echo -e "\t\tOrder allow,deny"                          >> $hostPath/$vhFileName`
-    `echo -e "\t\tallow from all"                            >> $hostPath/$vhFileName`
-    `echo -e "\t</Directory>"                                >> $hostPath/$vhFileName`
-    `echo "</VirtualHost>"                                   >> $hostPath/$vhFileName`
+    echo -e "\t<Directory $vhPath/>" >> $tmpFile
+    echo -e "\t\tOptions Indexes FollowSymLinks MultiViews" >> $tmpFile
+    echo -e "\t\tAllowOverride All" >> $tmpFile
+    echo -e "\t\tOrder allow,deny" >> $tmpFile
+    echo -e "\t\tallow from all" >> $tmpFile
+    echo -e "\t</Directory>" >> $tmpFile
+    echo "</VirtualHost>" >> $tmpFile
+
+    sudo mv $tmpFile $finalFile
 }
 
 #==================================================================#
@@ -576,7 +581,7 @@ addHost()
 
     if [ -z $SITES_DIRECTLY ]; then
         messageBlue "\n Habilitando host..."
-        a2ensite $vhFileName
+        sudo a2ensite $vhFileName
     fi
 
     if [ ${#vhServerName} -gt 0 ]; then
