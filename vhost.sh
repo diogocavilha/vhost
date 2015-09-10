@@ -237,6 +237,8 @@ appendEnvironmentVars()
 #==================================================================#
 requireFileName()
 {
+    local file
+
     echo -n -e "\n Nome do arquivo: "
     read vhFileName
 
@@ -246,9 +248,15 @@ requireFileName()
             vhFileName=${vhFileName}.conf
         fi
 
-        $(fileExists "$SITES_AVAILABLE/$vhFileName")
+        file=$SITES_DIRECTLY/$vhFileName
+
+        if [ "$SITES_DIRECTLY" = "" ]; then
+            file=$SITES_AVAILABLE/$vhFileName
+        fi
+
+        $(fileExists "$file")
         if [ $? -eq 1 ]; then
-            messageRed "\n [$SITES_AVAILABLE/$vhFileName] Arquivo já existe.\n"
+            messageRed "\n [$file] Arquivo já existe.\n"
             requireFileName
         fi
     else
