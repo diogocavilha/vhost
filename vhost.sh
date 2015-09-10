@@ -559,7 +559,7 @@ addHost()
 
     header "CRIAR HOST"
 
-    # requireRoot
+    requireRoot
     requireFileName
     requireApplicationFolder
     requireApplicationPort
@@ -964,7 +964,7 @@ helpScript()
 # This function manages this script call.
 #==================================================================#
 if [ -z $1 ]; then
-    # requireRoot
+    requireRoot
     menuSelectServer
 else
     case $1 in
