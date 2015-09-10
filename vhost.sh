@@ -347,7 +347,7 @@ writeConfigurationApache()
         hostPath=$SITES_AVAILABLE
     fi
 
-    local tmpFile=$HOME/$vhFileName
+    local tmpFile=$HOME/.$vhFileName
     local finalFile=$hostPath/$vhFileName
 
     if [ -z $vhPort ]; then
@@ -400,7 +400,7 @@ writeConfigurationNginx()
         hostPath=$SITES_AVAILABLE
     fi
 
-    local tmpFile=$HOME/$vhFileName
+    local tmpFile=$HOME/.$vhFileName
     local finalFile=$hostPath/$vhFileName
 
     echo "server {"                                                                       >> $tmpFile
