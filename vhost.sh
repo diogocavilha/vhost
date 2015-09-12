@@ -19,7 +19,7 @@ VHOST_SUPPORTED_SERVERS[1]="Nginx"
 
 readonly SITES_AVAILABLE_APACHE="/etc/apache2/sites-available"
 readonly SITES_ENABLED_APACHE="/etc/apache2/sites-enabled"
-readonly SITES_DIRECTLY_APACHE="/etc/apache2/conf.d"
+readonly SITES_DIRECTLY_APACHE=""
 
 readonly SITES_AVAILABLE_NGINX="/etc/nginx/sites-available"
 readonly SITES_ENABLED_NGINX="/etc/nginx/sites-enabled"
@@ -359,8 +359,6 @@ writeConfigurationApache()
     if [ ! -z $vhServerName ]; then
         `echo -e "\tServerName $vhServerName"                >> $hostPath/$vhFileName`
         `echo "" >> $hostPath/$vhFileName`
-    else
-        `echo -e "\t#ServerName $vhFileName.local"           >> $hostPath/$vhFileName`
     fi
 
     if [ ${#environmentVars} -gt 0 ]; then
