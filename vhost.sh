@@ -339,46 +339,37 @@ writeConfigurationApache()
     vhPort=$1
     vhServerName=$2
 
-    local hostPath
+    local configHeader
+    local configServerName
+    local file
 
-    if [ ! -z $SITES_DIRECTLY ]; then
-        hostPath=$SITES_DIRECTLY
-    else
-        hostPath=$SITES_AVAILABLE
+    file=$SITES_DIRECTLY/$vhFileName
+
+    if [ -z $SITES_DIRECTLY ]; then
+        file=$SITES_AVAILABLE/$vhFileName
     fi
 
-    local tmpFile=$HOME/.$vhFileName
-    local finalFile=$hostPath/$vhFileName
+    configHeader="Listen $vhPort\n<VirtualHost *:$vhPort>"
 
     if [ -z $vhPort ]; then
-        echo "<VirtualHost *:80>" >> $tmpFile
-    else
-        echo "Listen $vhPort" >> $tmpFile
-        echo "<VirtualHost *:$vhPort>" >> $tmpFile
+        configHeader="<VirtualHost *:80>"
     fi
-
-    echo -e "\tDocumentRoot $vhPath" >> $tmpFile
 
     if [ ! -z $vhServerName ]; then
-        echo -e "\tServerName $vhServerName" >> $tmpFile
-        echo "" >> $tmpFile
+        configServerName="ServerName $vhServerName"
     fi
 
-    if [ ${#environmentVars} -gt 0 ]; then
-        echo -e $environmentVars >> $tmpFile
-    else
-        echo -e "\t#SetEnv VAR_NAME\t\"value\"" >> $tmpFile
-    fi
-
-    echo -e "\t<Directory $vhPath/>" >> $tmpFile
-    echo -e "\t\tOptions Indexes FollowSymLinks MultiViews" >> $tmpFile
-    echo -e "\t\tAllowOverride All" >> $tmpFile
-    echo -e "\t\tOrder allow,deny" >> $tmpFile
-    echo -e "\t\tallow from all" >> $tmpFile
-    echo -e "\t</Directory>" >> $tmpFile
-    echo "</VirtualHost>" >> $tmpFile
-
-    sudo mv $tmpFile $finalFile
+    echo -e "$configHeader
+    DocumentRoot $vhPath
+    $configServerName
+    $environmentVars
+    <Directory $vhPath/>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+    </Directory>
+</VirtualHost>" > $file
 }
 
 #==================================================================#
