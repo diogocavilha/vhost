@@ -381,85 +381,70 @@ writeConfigurationNginx()
     vhPort=$1
     vhServerName=$2
 
-    local hostPath
+    local listenOrServerName
+    local file
 
-    if [ ! -z $SITES_DIRECTLY ]; then
-        hostPath=$SITES_DIRECTLY
-    else
-        hostPath=$SITES_AVAILABLE
+    file=$SITES_DIRECTLY/$vhFileName
+
+    if [ -z $SITES_DIRECTLY ]; then
+        file=$SITES_AVAILABLE/$vhFileName
     fi
 
-    local tmpFile=$HOME/.$vhFileName
-    local finalFile=$hostPath/$vhFileName
-
-    echo "server {"                                                                       >> $tmpFile
-
     if [ ! -z $vhPort ]; then
-        echo -e "\tlisten $vhPort;"                                                       >> $tmpFile
+        listenOrServerName="listen $vhPort;"
     fi
 
     if [ ! -z $vhServerName ]; then
-        echo -e "\tserver_name $vhServerName;"                                            >> $tmpFile
+        listenOrServerName="server_name $vhServerName;"
     fi
 
-    echo ""                                                                               >> $tmpFile
-    echo -e "\tlocation / {"                                                              >> $tmpFile
+    echo -e "server {
+    $listenOrServerName
 
-        echo -e "\t\troot $vhPath;"                                                       >> $tmpFile
+    location / {
+        root $vhPath;
 
-        echo -e "\t\tindex  index.php index.html index.htm;"                              >> $tmpFile
-        echo -e '\t\ttry_files $uri $uri/ @rewrite;'                                      >> $tmpFile
-        echo -e "\t\tfastcgi_connect_timeout 3000;"                                       >> $tmpFile
-        echo -e "\t\tfastcgi_send_timeout 3000;"                                          >> $tmpFile
-        echo -e "\t\tfastcgi_read_timeout 3000;"                                          >> $tmpFile
-        echo -e "\t\tclient_max_body_size 128M;"                                          >> $tmpFile
-        echo -e "\t\tproxy_read_timeout 3000;"                                            >> $tmpFile
-    echo -e "\t}"                                                                         >> $tmpFile
+        index  index.php index.html index.htm;
+        try_files $uri $uri/ @rewrite;
+        fastcgi_connect_timeout 3000;
+        fastcgi_send_timeout 3000;
+        fastcgi_read_timeout 3000;
+        client_max_body_size 128M;
+        proxy_read_timeout 3000;
+    }
 
-    echo ""                                                                               >> $tmpFile
-    echo -e "\tlocation @rewrite {"                                                       >> $tmpFile
-        echo -e '\t\trewrite ^/(.*)$ /index.php?_url=$uri&$args;'                         >> $tmpFile
-    echo -e "\t}"                                                                         >> $tmpFile
+    location @rewrite {
+        rewrite ^/(.*)$ /index.php?_url=$uri&$args;
+    }
 
-    echo ""                                                                               >> $tmpFile
-    echo -e "\terror_page  404              /404.html;"                                   >> $tmpFile
-    echo -e "\tlocation = /404.html {"                                                    >> $tmpFile
-        echo -e "\t\troot   /usr/share/nginx/www;"                                        >> $tmpFile
-    echo -e "\t}"                                                                         >> $tmpFile
+    error_page  404              /404.html;
+    location = /404.html {
+        root   /usr/share/nginx/www;
+    }
 
-    echo ""                                                                               >> $tmpFile
-    echo -e "\terror_page   500 502 503 504  /50x.html;"                                  >> $tmpFile
-    echo -e "\tlocation = /50x.html {"                                                    >> $tmpFile
-        echo -e "\t\troot   /usr/share/nginx/www;"                                        >> $tmpFile
-    echo -e "\t}"                                                                         >> $tmpFile
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/www;
+    }
 
-    echo ""                                                                               >> $tmpFile
-    echo -e '\tlocation ~ \.php$ {'                                                       >> $tmpFile
-        echo -e "\t\troot $vhPath;"                                                       >> $tmpFile
-        echo -e '\t\ttry_files $uri =404;'                                                >> $tmpFile
-        echo -e "\t\t#fastcgi_pass unix:/var/run/php5-fpm.sock;"                          >> $tmpFile
-        echo -e "\t\tfastcgi_pass 127.0.0.1:9000;"                                        >> $tmpFile
-        echo -e "\t\tfastcgi_index index.php;"                                            >> $tmpFile
-        echo -e '\t\tfastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;'   >> $tmpFile
-        echo -e "\t\tfastcgi_buffer_size 128k;"                                           >> $tmpFile
-        echo -e "\t\tfastcgi_buffers 256 16k;"                                            >> $tmpFile
-        echo -e "\t\tfastcgi_busy_buffers_size 256k;"                                     >> $tmpFile
-        echo -e "\t\tfastcgi_temp_file_write_size 256k;"                                  >> $tmpFile
-        echo -e ""                                                                        >> $tmpFile
-        echo -e "\t\tinclude fastcgi_params;"                                             >> $tmpFile
-        echo -e ""                                                                        >> $tmpFile
-        echo -e "\t\tfastcgi_param APPLICATION_ENV "development";"                        >> $tmpFile
+    location ~ \.php$ {
+        root $vhPath;
+        try_files $uri =404;
+        #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 256 16k;
+        fastcgi_busy_buffers_size 256k;
+        fastcgi_temp_file_write_size 256k;
 
-        if [ ${#environmentVars} -gt 0 ]; then
-            echo -e $environmentVars                                                      >> $tmpFile
-        else
-            echo -e "\t\t#fastcgi_param VAR_NAME\t\"value\";"                             >> $tmpFile
-        fi
+        include fastcgi_params;
 
-    echo -e "\t}"                                                                         >> $tmpFile
-    echo "}"                                                                              >> $tmpFile
+        $environmentVars
+    }
+}" > $file
 
-    sudo mv $tmpFile $finalFile
 }
 
 restartServer()
