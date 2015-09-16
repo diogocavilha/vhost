@@ -7,7 +7,7 @@ This script has been created to manage the virtual host files from Apache server
 # Installation
 
 ```sh
-git clone git@github.com:diogocavilha/vhost.git
+git clone https://github.com/diogocavilha/vhost.git
 cd vhost/
 chmod +x vhost.sh
 sudo ./vhost.sh
