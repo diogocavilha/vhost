@@ -790,12 +790,10 @@ removeHost()
 
         # If there is a server name we need to remove it from hosts file.
         messageBlue " Removendo entrada do arquivo /etc/hosts"
-        sed  "s/$IP_ADDRESS $serverName//" /etc/hosts > /etc/hosts2
-        mv -f /etc/hosts2 /etc/hosts
+        sed -i "s/$IP_ADDRESS $serverName//" /etc/hosts
 
         # Removing blank lines from hosts file.
-        sed "/^$/d" /etc/hosts > /etc/hosts2
-        mv -f /etc/hosts2 /etc/hosts
+        sed -i '/^$/d' /etc/hosts
     fi
 
     if [ ! -z $SITES_DIRECTLY ]; then
