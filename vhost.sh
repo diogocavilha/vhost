@@ -405,7 +405,7 @@ writeConfigurationNginx()
         root $vhPath;
 
         index  index.php index.html index.htm;
-        try_files $uri $uri/ @rewrite;
+        try_files \$uri \$uri/ @rewrite;
         fastcgi_connect_timeout 3000;
         fastcgi_send_timeout 3000;
         fastcgi_read_timeout 3000;
@@ -414,7 +414,7 @@ writeConfigurationNginx()
     }
 
     location @rewrite {
-        rewrite ^/(.*)$ /index.php?_url=$uri&$args;
+        rewrite ^/(.*)$ /index.php?_url=\$uri&\$args;
     }
 
     error_page  404              /404.html;
@@ -429,7 +429,7 @@ writeConfigurationNginx()
 
     location ~ \.php$ {
         root $vhPath;
-        try_files $uri =404;
+        try_files \$uri =404;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
         fastcgi_pass 127.0.0.1:9000;
         fastcgi_index index.php;
