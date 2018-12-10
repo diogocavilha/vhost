@@ -17,4 +17,4 @@ sudo ./vhost.sh
 
 ## Enjoy it!
 
-#####Thanks for downloading this script! I hope it might help you. Let me know if it is useful to you by sending an email to [diogocavilha@gmail.com](mailto:diogocavilha@gmail.com)
+Thanks for downloading this script! I hope it might help you. Let me know if it is useful to you by sending an email to [diogocavilha@gmail.com](mailto:diogocavilha@gmail.com)
