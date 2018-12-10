@@ -2,7 +2,7 @@
 
 This script has been created to manage the virtual host files from Apache server and Nginx server.
 
-*It has been only tested in systems Debian-like.*
+*It has been only tested in a Debian-like system.*
 
 # Installation
 
